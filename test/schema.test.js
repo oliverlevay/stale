@@ -1,8 +1,8 @@
 const schema = require('../lib/schema')
 
 const validConfigs = [
-  [{ daysUntilClose: false }],
-  [{ daysUntilClose: 1 }],
+  [{ daysUntilApprove: false }],
+  [{ daysUntilApprove: 1 }],
   [{ onlyLabels: ['foo'] }],
   [{ onlyLabels: 'foo' }, { onlyLabels: ['foo'] }],
   [{ onlyLabels: null }],
@@ -22,8 +22,8 @@ const validConfigs = [
   [{ markComment: false }],
   [{ unmarkComment: 'not stale' }],
   [{ unmarkComment: false }],
-  [{ closeComment: 'closing yo' }],
-  [{ closeComment: false }],
+  [{ approveComment: 'closing yo' }],
+  [{ approveComment: false }],
   [{ limitPerRun: 1 }],
   [{ limitPerRun: 30 }],
   [{ only: null }],
@@ -36,7 +36,7 @@ const validConfigs = [
 ]
 
 const invalidConfigs = [
-  [{ daysUntilClose: true }, 'must be a number or false'],
+  [{ daysUntilApprove: true }, 'must be a number or false'],
   [{ exemptProjects: 'nope' }, 'must be a boolean'],
   [{ exemptMilestones: 'nope' }, 'must be a boolean'],
   [{ exemptAssignees: 'nope' }, 'must be a boolean'],
@@ -45,7 +45,7 @@ const invalidConfigs = [
   [{ staleLabel: ['a', 'b'] }, 'must be a string'],
   [{ markComment: true }, 'must be a string or false'],
   [{ unmarkComment: true }, 'must be a string or false'],
-  [{ closeComment: true }, 'must be a string or false'],
+  [{ approveComment: true }, 'must be a string or false'],
   [{ limitPerRun: 31 }, 'must be an integer between 1 and 30'],
   [{ limitPerRun: 0 }, 'must be an integer between 1 and 30'],
   [{ limitPerRun: 0.5 }, 'must be an integer between 1 and 30'],
@@ -61,7 +61,7 @@ describe('schema', () => {
   test('defaults', async () => {
     expect(schema.validate({}).value).toEqual({
       daysUntilStale: 60,
-      daysUntilClose: 7,
+      daysUntilApprove: 7,
       onlyLabels: [],
       exemptLabels: ['pinned', 'security'],
       exemptProjects: false,
@@ -75,7 +75,7 @@ describe('schema', () => {
         'because it has not had recent activity. ' +
         'It will be closed if no further activity occurs.',
       unmarkComment: false,
-      closeComment: false,
+      approveComment: false,
       limitPerRun: 30
     })
   })

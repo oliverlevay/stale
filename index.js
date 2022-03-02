@@ -1,5 +1,6 @@
 require('newrelic')
 
+const { Context } = require('probot');
 const getConfig = require('probot-config')
 const createScheduler = require('probot-scheduler')
 const Stale = require('./lib/stale')
@@ -19,17 +20,17 @@ module.exports = async app => {
 
   app.on(events, unmark)
   app.on('schedule.repository', markAndSweep)
-
+  
   async function unmark (context) {
     if (!context.isBot) {
       const stale = await forRepository(context)
-      let issue = context.payload.issue || context.payload.pull_request
-      const type = context.payload.issue ? 'issues' : 'pulls'
+      let pull_request = context.payload.pull_request
+      const type = 'pulls'
 
       // Some payloads don't include labels
-      if (!issue.labels) {
+      if (!pull_request.labels) {
         try {
-          issue = (await context.github.issues.get(context.issue())).data
+          pull_request = (await context.github.issues.get(context.issue())).data
         } catch (error) {
           context.log('Issue not found')
         }
@@ -38,8 +39,8 @@ module.exports = async app => {
       const staleLabelAdded = context.payload.action === 'labeled' &&
         context.payload.label.name === stale.config.staleLabel
 
-      if (stale.hasStaleLabel(type, issue) && issue.state !== 'closed' && !staleLabelAdded) {
-        await stale.unmarkIssue(type, issue)
+      if (stale.hasStaleLabel(type, pull_request) && pull_request.state !== 'closed' && !staleLabelAdded) {
+        await stale.unmarkIssue(type, pull_request)
       }
     }
   }

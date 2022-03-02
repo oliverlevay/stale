@@ -125,7 +125,7 @@ describe('stale', () => {
       const stale = new Stale(github, { perform: true, owner: 'probot', repo: 'stale', logger: app.log })
       stale.config.limitPerRun = limitPerRun
       stale.config.staleLabel = staleLabel
-      stale.config.closeComment = 'closed'
+      stale.config.approveComment = 'approved'
 
       await stale.markAndSweep(type)
 
@@ -136,10 +136,10 @@ describe('stale', () => {
   })
 
   test(
-    'should not close issues if daysUntilClose is configured as false',
+    'should not approve issues if daysUntilApprove is configured as false',
     async () => {
       let stale = new Stale(github, { perform: true, owner: 'probot', repo: 'stale', logger: app.log })
-      stale.config.daysUntilClose = false
+      stale.config.daysUntilApprove = false
       stale.getStale = jest.fn().mockImplementation(() => Promise.resolve({ data: { items: [] } }))
       stale.getClosable = jest.fn()
 
@@ -152,11 +152,11 @@ describe('stale', () => {
   )
 
   test(
-    'should not close issues if the keyword pulls or keyword issues is used, and daysUntilClose is configured as false',
+    'should not approve issues if the keyword pulls or keyword issues is used, and daysUntilApprove is configured as false',
     async () => {
       let stale = new Stale(github, { perform: true, owner: 'probot', repo: 'stale', logger: app.log })
-      stale.config.pulls = { daysUntilClose: false }
-      stale.config.issues = { daysUntilClose: false }
+      stale.config.pulls = { daysUntilApprove: false }
+      stale.config.issues = { daysUntilApprove: false }
       stale.getStale = jest.fn().mockImplementation(() => Promise.resolve({ data: { items: [] } }))
       stale.getClosable = jest.fn()
 
@@ -173,7 +173,7 @@ describe('stale', () => {
     async () => {
       let stale = new Stale(github, { perform: true, owner: 'probot', repo: 'stale', logger: app.log })
       stale.config.only = 'pulls'
-      stale.config.daysUntilClose = 1
+      stale.config.daysUntilApprove = 1
       stale.getStale = jest.fn().mockImplementation(() => Promise.resolve({ data: { items: [] } }))
       stale.getClosable = jest.fn()
 
@@ -187,7 +187,7 @@ describe('stale', () => {
     async () => {
       let stale = new Stale(github, { perform: true, owner: 'probot', repo: 'stale', logger: app.log })
       stale.config.only = 'issues'
-      stale.config.daysUntilClose = 1
+      stale.config.daysUntilApprove = 1
       stale.getStale = jest.fn().mockImplementation(() => Promise.resolve({ data: { items: [] } }))
       stale.getClosable = jest.fn()
 
@@ -264,7 +264,7 @@ describe('stale', () => {
       async () => {
         const staleLabel = 'stale'
         let stale = new Stale(github, { perform: true, owner: 'probot', repo: 'stale', logger: app.log })
-        stale.config.daysUntilClose = 1
+        stale.config.daysUntilApprove = 1
         stale.getClosable = jest.fn().mockImplementation(() => {
           return Promise.resolve({
             data: {
@@ -286,7 +286,7 @@ describe('stale', () => {
       async () => {
         const staleLabel = 'stale'
         let stale = new Stale(github, { perform: true, owner: 'probot', repo: 'stale', logger: app.log })
-        stale.config.daysUntilClose = 1
+        stale.config.daysUntilApprove = 1
         stale.getClosable = jest.fn().mockImplementation(() => {
           return Promise.resolve({
             data: {
@@ -308,7 +308,7 @@ describe('stale', () => {
       async () => {
         const staleLabel = 'stale'
         let stale = new Stale(github, { perform: true, owner: 'probot', repo: 'stale', logger: app.log })
-        stale.config.daysUntilClose = 1
+        stale.config.daysUntilApprove = 1
         stale.getClosable = jest.fn().mockImplementation(() => {
           return Promise.resolve({
             data: {
